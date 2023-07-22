@@ -82,7 +82,7 @@ contract Inbox is ICallbackInbox {
 
     function isConstraintSatisfied(
         address contractAddress
-    ) external override returns (bool) {
+    ) external view override returns (bool) {
         RegisteredContract storage contractInfo = registeredCallbacks[
             contractAddress
         ];
