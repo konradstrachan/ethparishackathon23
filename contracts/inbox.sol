@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.0;
 
-contract Inbox {
+interface ICallbackInbox {
+    function registerContract(address contractAddress, bytes calldata data) external payable;
+    function executeRegisteredCallback(address contractAddress) external;
+}
+
+contract Inbox is ICallbackInbox {
     event ContractRegistered(
         address indexed contractAddress,
         address indexed invoker,
@@ -26,12 +30,9 @@ contract Inbox {
 
     mapping(address => RegisteredContract) public registeredCallbacks;
 
-    function registerContract(
-        address contractAddress,
-        bytes calldata data
-    ) public payable {
-        // IMPROVEMENT : use key based on address and hash of call data
-        //               to allow a contract to have multiple callbacks active
+    function registerContract(address contractAddress, bytes calldata data) external payable override {
+        // IMPROVEMENT: use key based on address and hash of call data
+        // to allow a contract to have multiple callbacks active
         require(msg.value > 100000, "Ether reward must be greater than minimum reward");
 
         registeredCallbacks[contractAddress] = RegisteredContract(
@@ -43,10 +44,8 @@ contract Inbox {
         emit ContractRegistered(contractAddress, msg.sender, msg.value, data);
     }
 
-    function executeRegisteredContract(address contractAddress) public {
-        RegisteredContract storage contractInfo = registeredCallbacks[
-            contractAddress
-        ];
+    function executeRegisteredCallback(address contractAddress) external override {
+        RegisteredContract storage contractInfo = registeredCallbacks[contractAddress];
         require(!contractInfo.executed, "Contract already executed");
 
         (bool success, ) = contractAddress.call(contractInfo.data);
