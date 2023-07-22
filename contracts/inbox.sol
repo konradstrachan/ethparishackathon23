@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 interface ICallbackInbox {
     function registerContract(address contractAddress, bytes calldata data) external payable;
     function executeRegisteredCallback(address contractAddress) external;
+    function isConstraintSatisfied(address contractAddress) external (bool);
 }
 
 contract Inbox is ICallbackInbox {
@@ -26,6 +27,7 @@ contract Inbox is ICallbackInbox {
         uint256 reward;
         bytes data;
         bool executed;
+        bool constraintSatisfied;
     }
 
     mapping(address => RegisteredContract) public registeredCallbacks;
@@ -38,7 +40,8 @@ contract Inbox is ICallbackInbox {
         registeredCallbacks[contractAddress] = RegisteredContract(
             msg.value,
             data,
-            false
+            false,
+            true        // IMPROVEMENT : make constraint based on block time or external check
         );
 
         emit ContractRegistered(contractAddress, msg.sender, msg.value, data);
@@ -58,5 +61,10 @@ contract Inbox is ICallbackInbox {
         executor.transfer(reward);
 
         emit ContractExecuted(contractAddress, executor, reward);
+    }
+
+    function isConstraintSatisfied(address contractAddress) external override (bool) {
+        RegisteredContract storage contractInfo = registeredCallbacks[contractAddress];
+        return contractInfo.executed == false && contractInfo.constraintSatisfied == true;
     }
 }
