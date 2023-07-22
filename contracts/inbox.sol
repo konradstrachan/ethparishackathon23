@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.0;
 
 contract Inbox {
     event ContractRegistered(
         address indexed contractAddress,
-        address indexed owner,
+        address indexed invoker,
         uint256 reward,
         bytes data
     );
+
     event ContractExecuted(
         address indexed contractAddress,
         address indexed executor,
@@ -23,31 +24,27 @@ contract Inbox {
         bool executed;
     }
 
-    mapping(address => RegisteredContract) public registeredContracts;
+    mapping(address => RegisteredContract) public registeredCallbacks;
 
     function registerContract(
         address contractAddress,
-        uint256 reward,
         bytes calldata data
     ) public payable {
-        require(
-            !registeredContracts[contractAddress].executed,
-            "Contract already executed"
-        );
-        require(reward > 0, "Reward must be greater than 0");
+        // IMPROVEMENT : use key based on address and hash of call data
+        //               to allow a contract to have multiple callbacks active
+        require(msg.value > 100000, "Ether reward must be greater than minimum reward");
 
-        registeredContracts[contractAddress] = RegisteredContract(
-            reward,
+        registeredCallbacks[contractAddress] = RegisteredContract(
+            msg.value,
             data,
             false
         );
 
-        address(this).transfer(reward);
-        emit ContractRegistered(contractAddress, msg.sender, reward, data);
+        emit ContractRegistered(contractAddress, msg.sender, msg.value, data);
     }
 
     function executeRegisteredContract(address contractAddress) public {
-        RegisteredContract storage contractInfo = registeredContracts[
+        RegisteredContract storage contractInfo = registeredCallbacks[
             contractAddress
         ];
         require(!contractInfo.executed, "Contract already executed");
@@ -58,7 +55,8 @@ contract Inbox {
         contractInfo.executed = true;
 
         uint256 reward = contractInfo.reward;
-        address executor = msg.sender;
+        address payable executor = payable(msg.sender);
+        executor.transfer(reward);
 
         emit ContractExecuted(contractAddress, executor, reward);
     }
