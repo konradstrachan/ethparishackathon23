@@ -2,7 +2,12 @@
 pragma solidity ^0.8.0;
 
 interface ICallbackInbox {
-    function registerContract(address contractAddress, bytes calldata data) external payable;
+    function registerContract(
+        address contractAddress,
+        bytes calldata preconditionalCallback,
+        bytes calldata executionCallback
+    ) external payable;
+
     function executeRegisteredCallback(address contractAddress) external;
 }
 
@@ -17,12 +22,22 @@ contract Counter {
         lastCallBlock = block.number;
     }
 
+    function preconditionSatisfied() public view returns (bool) {
+        return block.number > lastCallBlock + 2;
+    }
+
+    function resetNumber() public {
+        counter = 0;
+    }
+
     function incrementCounter() public payable {
-        require(block.number > lastCallBlock + 2, "Function can only be called every 10 blocks");
+        require(preconditionSatisfied(), "Precondition not satisfied");
+        
         counter += 1;
         lastCallBlock = block.number;
 
-        bytes memory callback = abi.encodeCall(this.incrementCounter,());
-        inbox.registerContract{value:msg.value}(address(this), callback);
+        bytes memory preconditional = abi.encodeCall(this.preconditionSatisfied,());
+        bytes memory callback = abi.encodeCall(this.resetNumber,());
+        inbox.registerContract{value:msg.value}(address(this), preconditional, callback);
     }
 }

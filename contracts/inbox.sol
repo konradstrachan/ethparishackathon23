@@ -4,22 +4,18 @@ pragma solidity ^0.8.0;
 interface ICallbackInbox {
     function registerContract(
         address contractAddress,
-        bytes calldata data
+        bytes calldata preconditionalCallback,
+        bytes calldata executionCallback
     ) external payable;
 
     function executeRegisteredCallback(address contractAddress) external;
-
-    function isConstraintSatisfied(
-        address contractAddress
-    ) external returns (bool);
 }
 
 contract Inbox is ICallbackInbox {
     event ContractRegistered(
         address indexed contractAddress,
         address indexed invoker,
-        uint256 reward,
-        bytes data
+        uint256 reward
     );
 
     event ContractExecuted(
@@ -28,20 +24,19 @@ contract Inbox is ICallbackInbox {
         uint256 rewardPaid
     );
 
-    event RewardClaimed(address indexed executor, uint256 rewardPaid);
-
     struct RegisteredContract {
         uint256 reward;
-        bytes data;
+        bytes preconditionalCallback;
+        bytes executionCallback;
         bool executed;
-        bool constraintSatisfied;
     }
 
     mapping(address => RegisteredContract) public registeredCallbacks;
 
     function registerContract(
         address contractAddress,
-        bytes calldata data
+        bytes calldata preconditionalCallback,
+        bytes calldata executionCallback
     ) external payable override {
         // IMPROVEMENT: use key based on address and hash of call data
         // to allow a contract to have multiple callbacks active
@@ -52,12 +47,34 @@ contract Inbox is ICallbackInbox {
 
         registeredCallbacks[contractAddress] = RegisteredContract(
             msg.value,
-            data,
-            false,
-            true // IMPROVEMENT : make constraint based on block time or external check
+            preconditionalCallback,
+            executionCallback,
+            false
         );
 
-        emit ContractRegistered(contractAddress, msg.sender, msg.value, data);
+        emit ContractRegistered(contractAddress, msg.sender, msg.value);
+    }
+
+    function isConstraintSatisfied(
+        address contractAddress
+    ) public returns (bool) {
+        // TODO : Constrain nature of function to enable use of view decorator
+        RegisteredContract storage contractInfo = registeredCallbacks[
+            contractAddress
+        ];
+
+        if (contractInfo.executed == true) {
+            return false;
+        }
+        
+        (bool success, bytes memory preconditionData) = contractAddress.call(contractInfo.preconditionalCallback);
+
+        if(success == false || preconditionData.length == 0){
+            return false;
+        }
+
+        bool preconditionalState = abi.decode(preconditionData, (bool));
+        return preconditionalState;
     }
 
     function executeRegisteredCallback(
@@ -69,8 +86,10 @@ contract Inbox is ICallbackInbox {
         require(!contractInfo.executed, "Contract already executed");
         uint256 reward = contractInfo.reward;
 
-        (bool success, ) = contractAddress.call(contractInfo.data);
-        require(success, "Contract execution failed");
+        require(isConstraintSatisfied(contractAddress), "Contract preconditional failed");
+
+        (bool success, ) = contractAddress.call(contractInfo.executionCallback);
+        require(success, "Contract execution execution failed");
 
         contractInfo.executed = true;
 
@@ -78,16 +97,5 @@ contract Inbox is ICallbackInbox {
         executor.transfer(reward);
 
         emit ContractExecuted(contractAddress, executor, reward);
-    }
-
-    function isConstraintSatisfied(
-        address contractAddress
-    ) external view override returns (bool) {
-        RegisteredContract storage contractInfo = registeredCallbacks[
-            contractAddress
-        ];
-        return
-            contractInfo.executed == false &&
-            contractInfo.constraintSatisfied == true;
     }
 }
