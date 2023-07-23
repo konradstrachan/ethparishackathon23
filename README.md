@@ -25,10 +25,10 @@ CallHook creates an economic incentive for external participants to trigger acti
 
 ## Deployed contractrs
 
-* Polygon zkEVM - 0x043383e00444f873B95D22db2D609d3355FD3Ff9
-* Celo - 0x043383e00444f873B95D22db2D609d3355FD3Ff9
+* Polygon zkEVM - 🚀🔗 https://testnet-zkevm.polygonscan.com/address/0x043383e00444f873B95D22db2D609d3355FD3Ff9#code
+* Celo - 🚀🔗 https://alfajores.celoscan.io/address/0x043383e00444f873B95D22db2D609d3355FD3Ff9
 * Neon - TBC
-* Linea - 0x043383e00444f873B95D22db2D609d3355FD3Ff9
+* Linea - 🚀🔗 https://explorer.goerli.linea.build/address/0x043383e00444f873B95D22db2D609d3355FD3Ff9 (deployed via Infura)
 * Gnosis - TBC
 * Mantle - TBC
 
