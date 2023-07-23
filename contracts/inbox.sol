@@ -67,13 +67,13 @@ contract Inbox is ICallbackInbox {
             contractAddress
         ];
         require(!contractInfo.executed, "Contract already executed");
+        uint256 reward = contractInfo.reward;
 
         (bool success, ) = contractAddress.call(contractInfo.data);
         require(success, "Contract execution failed");
 
         contractInfo.executed = true;
 
-        uint256 reward = contractInfo.reward;
         address payable executor = payable(msg.sender);
         executor.transfer(reward);
 

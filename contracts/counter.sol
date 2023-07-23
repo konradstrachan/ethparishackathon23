@@ -22,7 +22,7 @@ contract Counter {
         counter += 1;
         lastCallBlock = block.number;
 
-        bytes memory callback = abi.encodeWithSignature("incrementCounter()");
+        bytes memory callback = abi.encodeCall(this.incrementCounter,());
         inbox.registerContract{value:msg.value}(address(this), callback);
     }
 }
