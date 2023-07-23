@@ -201,18 +201,16 @@ contract Counter {
 ```
 
 # Key Features
-Event-driven Architecture: CallHook enables smart contracts to initiate actions in response to events or specific conditions, promoting event-driven programming on EVM networks.
 
-Decentralized and Trustless: The entire CallHook system operates in a decentralized manner, ensuring security, transparency, and trustlessness in executing actions on behalf of smart contracts.
+* **Event-driven Architecture**: CallHook enables smart contracts to initiate actions in response to events or specific conditions, promoting event-driven programming on EVM networks
 
-Incentivization: External participants are incentivized to trigger actions for registered contracts, creating a self-sustaining ecosystem where participants are rewarded for their contributions.
+* **Decentralized and Trustless**: CallHook system operates in a decentralized manner, ensuring security, transparency, and trustlessness in executing actions on behalf of smart contracts
 
-Flexibility: Smart contract developers have the flexibility to define the events or conditions that should trigger actions, allowing for dynamic and adaptable contract behavior.
+* **Incentivization**: External participants are incentivized to trigger actions for registered contracts, creating a self-sustaining ecosystem where participants are rewarded for their actions
 
-Enhanced DApp Functionality: DApps can leverage CallHook to create more sophisticated and autonomous smart contracts, reducing the reliance on external systems and manual intervention.
+* **Flexibility**: Smart contract developers have the flexibility to programatically define the events or conditions that should trigger actions, allowing for dynamic and adaptable contract behavior
 
-Incentive Mechanism
-The CallHook project implements an incentive mechanism to encourage external participants to trigger actions on behalf of registered smart contracts. When an external participant successfully executes an action for a contract, they are rewarded with a predetermined number of tokens or fees. The incentive system is designed to be fair, transparent, and secure, fostering active participation and continuous improvement of the ecosystem.
+* **Enhanced DApp Functionality**: DApps can leverage CallHook to create more sophisticated and autonomous smart contracts, reducing the reliance on external systems and manual intervention.
 
 ## Contributing
 Contributions to CallHook are welcome! If you have any ideas, suggestions, or bug fixes, please submit an issue or pull request to the CallHook GitHub repository.
