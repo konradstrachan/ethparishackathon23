@@ -38,5 +38,10 @@ module.exports = {
       accounts: [PRIVATE_KEY],
       chainId: 5001,
     },
+    zkEVM: {
+      url: "https://rpc.public.zkevm-test.net",
+      accounts: [PRIVATE_KEY],
+      chainId: 1442,
+    },
   }
 };
