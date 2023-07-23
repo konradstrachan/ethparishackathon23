@@ -6,7 +6,7 @@ interface ICallbackInbox {
     function executeRegisteredCallback(address contractAddress) external;
 }
 
-contract SimpleCounter {
+contract Counter {
     uint256 public counter;
     ICallbackInbox private inbox;
     uint256 public lastCallBlock;
@@ -17,12 +17,12 @@ contract SimpleCounter {
         lastCallBlock = block.number;
     }
 
-    function incrementCounter(uint256 amount) public payable {
-        require(block.number > lastCallBlock + 10, "Function can only be called every 10 blocks");
-        counter += amount;
+    function incrementCounter() public payable {
+        require(block.number > lastCallBlock + 2, "Function can only be called every 10 blocks");
+        counter += 1;
         lastCallBlock = block.number;
 
-        bytes memory callback = abi.encodeWithSignature("executeRegisteredCallback(address)", address(this));
-        inbox.registerContract(address(this), callback);
+        bytes memory callback = abi.encodeWithSignature("incrementCounter()");
+        inbox.registerContract{value:msg.value}(address(this), callback);
     }
 }
