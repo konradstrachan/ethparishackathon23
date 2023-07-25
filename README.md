@@ -1,5 +1,9 @@
 # Callhook ⚙️🪝
 
+![image](https://github.com/konradstrachan/ethparishackathon23/assets/21056525/328f5f00-46a6-43a3-b4dd-4895c27d56c5)
+
+This project won the [Gnosis Chain Best Use prize](https://ethglobal.com/showcase/callhook-362hi) at ETH Global Paris 2023 ❤️
+
 ## Introduction
 
 CallHook was created as a hackathon project during ETH Global Paris 2023 and is aimed at addressing a current limitation in smart contract programming on EVM (Ethereum Virtual Machine) networks. Currently, smart contracts can only be invoked by Externally Owned Accounts (EOA) transactions, meaning they lack the ability to initiate calls by themselves. This limitation hinders the adoption of event-driven architecture in smart contract development.
