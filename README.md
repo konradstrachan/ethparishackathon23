@@ -221,6 +221,10 @@ contract Counter {
 
 * **Enhanced DApp Functionality**: DApps can leverage CallHook to create more sophisticated and autonomous smart contracts, reducing the reliance on external systems and manual intervention.
 
+## Acknowledgements
+
+Thank you to [Jannik Spilker](https://github.com/Jannikio) for his contributions to this project.
+
 ## Contributing
 Contributions to CallHook are welcome! If you have any ideas, suggestions, or bug fixes, please submit an issue or pull request to the CallHook GitHub repository.
 
