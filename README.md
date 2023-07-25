@@ -1,6 +1,6 @@
 # Callhook ⚙️🪝
 
-![image](https://github.com/konradstrachan/ethparishackathon23/assets/21056525/328f5f00-46a6-43a3-b4dd-4895c27d56c5)
+![image](https://github.com/konradstrachan/ethparishackathon23/assets/21056525/b1a1d64f-d2ba-462e-9d14-cfe0eab4352c)
 
 This project won the [Gnosis Chain Best Use prize](https://ethglobal.com/showcase/callhook-362hi) at ETH Global Paris 2023 ❤️
 
